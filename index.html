@@ -18,6 +18,15 @@
       font-size: 18px;
       margin-bottom: 30px;
     }
+    label, select {
+      font-size: 16px;
+      margin: 10px 0;
+    }
+    select {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
     .btn {
       padding: 15px 30px;
       margin: 10px;
@@ -38,14 +47,30 @@
 <body>
 
   <h1>👋 Assalomu alaykum!</h1>
-  <p>Bu sayt orqali siz 10 soniyada qancha o‘zbekcha so‘z topa olishingizni sinab ko‘rishingiz mumkin!</p>
-  <button class="btn start" onclick="location.href='oyin.html'">🚀 Boshlash</button>
+  <p>Bu sayt orqali siz tanlagan vaqt ichida qancha o‘zbekcha so‘z topa olishingizni sinab ko‘rishingiz mumkin!</p>
+
+  <label for="duration">⏱ O‘yin davomiyligini tanlang (soniya):</label><br>
+  <select id="duration">
+    <option value="10">10 soniya</option>
+    <option value="20">20 soniya</option>
+    <option value="30">30 soniya</option>
+    <option value="60">60 soniya</option>
+  </select>
+
+  <br><br>
+  <button class="btn start" onclick="startGame()">🚀 Boshlash</button>
   <button class="btn reyting" onclick="location.href='reyting.html'">🏆 Reyting</button>
   <button class="btn delete" onclick="deleteAccount()">🗑 Akkauntni o‘chirish</button>
 
   <script>
     const user = JSON.parse(localStorage.getItem("sozUser"));
     if (!user) window.location.href = "register.html";
+
+    function startGame() {
+      const selectedTime = document.getElementById("duration").value;
+      localStorage.setItem("sozTime", selectedTime); // tanlangan vaqtni saqlash
+      window.location.href = "oyin.html"; // o‘yin sahifasiga o‘tish
+    }
 
     function deleteAccount() {
       if (confirm("Akkauntingizni o‘chirmoqchimisiz?")) {

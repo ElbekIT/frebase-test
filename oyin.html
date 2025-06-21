@@ -65,7 +65,7 @@
 </head>
 <body>
   <h1>🧠 So‘z Topish O‘yini</h1>
-  <div id="timer">⏳ 10 soniya qoldi</div>
+  <div id="timer">⏳ O'yin boshlanmoqda...</div>
   <div id="wordBox">...</div>
   <input type="text" id="inputWord" placeholder="So‘zni yozing va Enter bosing" autocomplete="off" />
   <div id="score">Ball: 0</div>
@@ -95,12 +95,13 @@
     const db = getDatabase(app);
 
     const user = JSON.parse(localStorage.getItem("sozUser"));
-    if (!user) window.location.href = "index.html";
+    if (!user) window.location.href = "register.html";
 
+    let time = parseInt(localStorage.getItem("sozTime") || "10");
     const wordList = ["olma", "kitob", "telefon", "maktab", "uy", "daraxt", "qush", "oy", "quyosh", "bolajon"];
+
     let currentWord = "";
     let score = 0;
-    let time = 10;
 
     const wordBox = document.getElementById("wordBox");
     const input = document.getElementById("inputWord");
@@ -142,29 +143,37 @@
       }
     });
 
+    function endGame() {
+      timer.textContent = "✅ O'yin tugadi!";
+      input.disabled = true;
+
+      const userRef = ref(db, "users/" + user.phone);
+      onValue(userRef, (snapshot) => {
+        const data = snapshot.val();
+        if (!data || score > data.score) {
+          set(userRef, {
+            name: user.name,
+            phone: user.phone,
+            score
+          });
+        }
+      }, { onlyOnce: true });
+
+      setTimeout(() => {
+        window.location.href = "bosh.html";
+      }, 3000); // 3 soniyadan keyin bosh sahifaga qaytadi
+    }
+
     // Start
     newWord();
     input.focus();
+    timer.textContent = `⏳ ${time} soniya qoldi`;
     const interval = setInterval(() => {
       time--;
       timer.textContent = `⏳ ${time} soniya qoldi`;
       if (time <= 0) {
         clearInterval(interval);
-        timer.textContent = "✅ O'yin tugadi!";
-        input.disabled = true;
-
-        // Reytingga yozish
-        const userRef = ref(db, "users/" + user.phone);
-        onValue(userRef, (snapshot) => {
-          const data = snapshot.val();
-          if (!data || score > data.score) {
-            set(userRef, {
-              name: user.name,
-              phone: user.phone,
-              score
-            });
-          }
-        }, { onlyOnce: true });
+        endGame();
       }
     }, 1000);
 
