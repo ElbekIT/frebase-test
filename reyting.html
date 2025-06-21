@@ -8,43 +8,80 @@
   <script type="module" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
   <style>
     body {
-      background: #f3f3f3;
-      font-family: sans-serif;
-      padding: 30px;
+      background: linear-gradient(135deg, #e0f7fa 0%, #f3f3f3 100%);
+      font-family: 'Segoe UI', 'Arial', sans-serif;
+      padding: 40px 0;
       text-align: center;
+      min-height: 100vh;
     }
     h1 {
-      color: #2e7d32;
-      margin-bottom: 20px;
+      color: #1b5e20;
+      margin-bottom: 28px;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
     }
     #scores {
-      max-width: 500px;
+      max-width: 520px;
       margin: 0 auto;
-      background: white;
-      border-radius: 8px;
-      padding: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background: #fff;
+      border-radius: 14px;
+      padding: 28px 24px;
+      box-shadow: 0 4px 24px rgba(44, 62, 80, 0.10);
       text-align: left;
+      font-size: 1.15rem;
     }
     .score-item {
-      border-bottom: 1px solid #ddd;
-      padding: 10px 0;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 14px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .score-item:nth-child(1) {
+      background: linear-gradient(90deg, #ffe082 0%, #fffde7 100%);
+      font-size: 1.18rem;
+      color: #ffab00;
+      font-weight: 700;
+      border-radius: 8px 8px 0 0;
+    }
+    .score-item:nth-child(2) {
+      background: linear-gradient(90deg, #b2ebf2 0%, #e0f7fa 100%);
+      color: #0097a7;
+      font-weight: 600;
+    }
+    .score-item:nth-child(3) {
+      background: linear-gradient(90deg, #ffe0b2 0%, #fff3e0 100%);
+      color: #ff6f00;
+      font-weight: 600;
     }
     .score-item:last-child {
       border-bottom: none;
     }
+    .score-item strong {
+      min-width: 32px;
+      display: inline-block;
+      text-align: right;
+      font-size: 1.1em;
+    }
     .back-btn {
-      margin-top: 30px;
-      padding: 10px 20px;
-      font-size: 16px;
+      margin-top: 36px;
+      padding: 12px 32px;
+      font-size: 1.1rem;
       border: none;
-      border-radius: 8px;
-      background: #00c853;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #00c853 0%, #43e97b 100%);
       color: white;
       cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+      transition: background 0.2s, transform 0.1s;
     }
     .back-btn:hover {
-      background: #00b34d;
+      background: linear-gradient(90deg, #00b34d 0%, #43e97b 100%);
+      transform: translateY(-2px) scale(1.03);
     }
   </style>
 </head>
@@ -52,7 +89,7 @@
 
   <h1>🏆 Reyting</h1>
   <div id="scores">Yuklanmoqda...</div>
-  <button class="back-btn" onclick="location.href='index.html'">⬅️ Ortga</button>
+<button class="back-btn" onclick="location.href='index.html'">⬅️ Ortga</button>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";

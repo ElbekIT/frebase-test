@@ -5,36 +5,88 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Bosh Sahifa</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden; /* Scrollni o‘chiradi */
+    }
     body {
-      background: #f3f3f3;
-      font-family: sans-serif;
+      background: linear-gradient(135deg, #e0f7fa 0%, #f3f3f3 100%);
+      font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
       text-align: center;
-      padding: 50px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+    }
+    .topbar {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      background: #ffffffdd;
+      padding: 10px 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px #b2dfdb66;
+      font-weight: bold;
+      color: #00695c;
     }
     h1 {
-      color: #2e7d32;
+      color: #1b5e20;
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      letter-spacing: 1.5px;
+      font-weight: 800;
+      text-shadow: 0 3px 12px #b2dfdb77;
     }
     p {
-      font-size: 18px;
+      font-size: 1.2rem;
       margin-bottom: 30px;
+      color: #222;
+      max-width: 540px;
+      background: #ffffffcc;
+      border-radius: 12px;
+      padding: 18px 12px;
+      box-shadow: 0 2px 10px #b2dfdb22;
     }
-    label, select {
-      font-size: 16px;
-      margin: 10px 0;
+    label {
+      font-size: 1.1rem;
+      color: #00695c;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: inline-block;
     }
     select {
-      padding: 8px 12px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      padding: 12px 22px;
+      border-radius: 12px;
+      border: 1.5px solid #b2dfdb;
+      font-size: 1rem;
+      background: #f8ffff;
+      margin-top: 10px;
+      margin-bottom: 22px;
+      box-shadow: 0 1px 6px #b2dfdb22;
     }
     .btn {
-      padding: 15px 30px;
+      padding: 15px 35px;
       margin: 10px;
-      font-size: 16px;
+      font-size: 1rem;
       border: none;
-      border-radius: 8px;
-      color: white;
+      border-radius: 12px;
+      color: #fff;
       cursor: pointer;
+      box-shadow: 0 3px 12px #b2dfdb44;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn:active {
+      transform: scale(0.96);
     }
     .start { background: #00c853; }
     .start:hover { background: #00b34d; }
@@ -45,6 +97,8 @@
   </style>
 </head>
 <body>
+
+  <div class="topbar" id="usernameBox">👤 Foydalanuvchi</div>
 
   <h1>👋 Assalomu alaykum!</h1>
   <p>Bu sayt orqali siz tanlagan vaqt ichida qancha o‘zbekcha so‘z topa olishingizni sinab ko‘rishingiz mumkin!</p>
@@ -66,10 +120,13 @@
     const user = JSON.parse(localStorage.getItem("sozUser"));
     if (!user) window.location.href = "register.html";
 
+    // Foydalanuvchi ismini chiqarish
+    document.getElementById("usernameBox").textContent = `👤 ${user.name}`;
+
     function startGame() {
       const selectedTime = document.getElementById("duration").value;
-      localStorage.setItem("sozTime", selectedTime); // tanlangan vaqtni saqlash
-      window.location.href = "oyin.html"; // o‘yin sahifasiga o‘tish
+      localStorage.setItem("sozTime", selectedTime);
+      window.location.href = "oyin.html";
     }
 
     function deleteAccount() {
