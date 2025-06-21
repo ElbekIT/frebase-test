@@ -95,7 +95,7 @@
     const db = getDatabase(app);
 
     const user = JSON.parse(localStorage.getItem("sozUser"));
-    if (!user) window.location.href = "register.html";
+    if (!user) window.location.href = "index.html";
 
     let time = parseInt(localStorage.getItem("sozTime") || "10");
     const wordList = ["olma", "kitob", "telefon", "maktab", "uy", "daraxt", "qush", "oy", "quyosh", "bolajon"];
