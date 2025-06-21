@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🏆 Reyting - So‘z Topish O‘yini</title>
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+  <style>
+    body {
+      background: #f3f3f3;
+      font-family: sans-serif;
+      padding: 30px;
+      text-align: center;
+    }
+    h1 {
+      color: #2e7d32;
+      margin-bottom: 20px;
+    }
+    #scores {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+    .score-item {
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+    }
+    .score-item:last-child {
+      border-bottom: none;
+    }
+    .back-btn {
+      margin-top: 30px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background: #00c853;
+      color: white;
+      cursor: pointer;
+    }
+    .back-btn:hover {
+      background: #00b34d;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🏆 Reyting</h1>
+  <div id="scores">Yuklanmoqda...</div>
+  <button class="back-btn" onclick="location.href='bosh.html'">⬅️ Ortga</button>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB1KIzGCvifH-lzNzOtY0F__AL6PU7_B_Y",
+      authDomain: "elbekproductions.firebaseapp.com",
+      databaseURL: "https://elbekproductions-default-rtdb.firebaseio.com",
+      projectId: "elbekproductions",
+      storageBucket: "elbekproductions.appspot.com",
+      messagingSenderId: "467619718063",
+      appId: "1:467619718063:web:f370881cffbb396899c55a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const scoresDiv = document.getElementById("scores");
+    const usersRef = ref(db, "users");
+
+    onValue(usersRef, (snapshot) => {
+      const data = snapshot.val();
+      scoresDiv.innerHTML = "";
+      if (data) {
+        const sorted = Object.values(data).sort((a, b) => b.score - a.score);
+        sorted.forEach((u, i) => {
+          scoresDiv.innerHTML += `
+            <div class="score-item">
+              <strong>${i + 1}.</strong> ${u.name} (${u.phone}) – ${u.score} ball
+            </div>`;
+        });
+      } else {
+        scoresDiv.textContent = "Hech kim hali o‘ynamagan.";
+      }
+    });
+  </script>
+
+</body>
+</html>

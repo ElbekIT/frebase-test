@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>O'yin - So‘z Topish</title>
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #fffde7;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      color: #2e7d32;
+    }
+    #wordBox {
+      font-size: 32px;
+      margin: 20px 0;
+      font-weight: bold;
+    }
+    #inputWord {
+      font-size: 20px;
+      padding: 10px;
+      width: 60%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    #timer {
+      font-size: 22px;
+      color: #f57c00;
+      margin: 15px 0;
+    }
+    #score {
+      font-size: 20px;
+      color: #2e7d32;
+    }
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      margin-top: 20px;
+      border-radius: 8px;
+      background: #00c853;
+      color: white;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: #00b34d;
+    }
+    .delete {
+      background: #d32f2f;
+      margin-top: 10px;
+    }
+    #leaderboard {
+      margin-top: 40px;
+    }
+    #leaderboard div {
+      border-bottom: 1px solid #ccc;
+      padding: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧠 So‘z Topish O‘yini</h1>
+  <div id="timer">⏳ 10 soniya qoldi</div>
+  <div id="wordBox">...</div>
+  <input type="text" id="inputWord" placeholder="So‘zni yozing va Enter bosing" autocomplete="off" />
+  <div id="score">Ball: 0</div>
+
+  <div id="leaderboard">
+    <h3>🏆 Reyting</h3>
+    <div id="scores">Yuklanmoqda...</div>
+  </div>
+
+  <button class="btn delete" onclick="deleteAccount()">🗑 Akkauntni o‘chirish</button>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB1KIzGCvifH-lzNzOtY0F__AL6PU7_B_Y",
+      authDomain: "elbekproductions.firebaseapp.com",
+      databaseURL: "https://elbekproductions-default-rtdb.firebaseio.com",
+      projectId: "elbekproductions",
+      storageBucket: "elbekproductions.appspot.com",
+      messagingSenderId: "467619718063",
+      appId: "1:467619718063:web:f370881cffbb396899c55a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const user = JSON.parse(localStorage.getItem("sozUser"));
+    if (!user) window.location.href = "index.html";
+
+    const wordList = ["olma", "kitob", "telefon", "maktab", "uy", "daraxt", "qush", "oy", "quyosh", "bolajon"];
+    let currentWord = "";
+    let score = 0;
+    let time = 10;
+
+    const wordBox = document.getElementById("wordBox");
+    const input = document.getElementById("inputWord");
+    const timer = document.getElementById("timer");
+    const scoreBox = document.getElementById("score");
+
+    function newWord() {
+      currentWord = wordList[Math.floor(Math.random() * wordList.length)];
+      wordBox.textContent = currentWord;
+      input.value = "";
+    }
+
+    function updateScoreboard() {
+      const scoresDiv = document.getElementById("scores");
+      const usersRef = ref(db, "users");
+      onValue(usersRef, (snapshot) => {
+        const data = snapshot.val();
+        scoresDiv.innerHTML = "";
+        if (data) {
+          const sorted = Object.values(data).sort((a, b) => b.score - a.score);
+          sorted.forEach((u, i) => {
+            scoresDiv.innerHTML += `<div><strong>${i + 1}.</strong> ${u.name} (${u.phone}) – ${u.score} ball</div>`;
+          });
+        } else {
+          scoresDiv.textContent = "Hali foydalanuvchilar yo‘q.";
+        }
+      });
+    }
+
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        if (input.value.trim().toLowerCase() === currentWord.toLowerCase()) {
+          score++;
+          scoreBox.textContent = "Ball: " + score;
+          newWord();
+        } else {
+          input.value = "";
+        }
+      }
+    });
+
+    // Start
+    newWord();
+    input.focus();
+    const interval = setInterval(() => {
+      time--;
+      timer.textContent = `⏳ ${time} soniya qoldi`;
+      if (time <= 0) {
+        clearInterval(interval);
+        timer.textContent = "✅ O'yin tugadi!";
+        input.disabled = true;
+
+        // Reytingga yozish
+        const userRef = ref(db, "users/" + user.phone);
+        onValue(userRef, (snapshot) => {
+          const data = snapshot.val();
+          if (!data || score > data.score) {
+            set(userRef, {
+              name: user.name,
+              phone: user.phone,
+              score
+            });
+          }
+        }, { onlyOnce: true });
+      }
+    }, 1000);
+
+    updateScoreboard();
+
+    window.deleteAccount = () => {
+      if (confirm("Akkauntingizni o‘chirmoqchimisiz?")) {
+        const userRef = ref(db, "users/" + user.phone);
+        remove(userRef).then(() => {
+          localStorage.removeItem("sozUser");
+          alert("Akkaunt o‘chirildi.");
+          window.location.href = "register.html";
+        });
+      }
+    };
+  </script>
+</body>
+</html>

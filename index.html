@@ -1,166 +1,60 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8">
-  <title>Tez Yozish Testi</title>
-  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bosh Sahifa</title>
   <style>
     body {
+      background: #f3f3f3;
       font-family: sans-serif;
-      background: #121212;
-      color: #fff;
-      margin: 0;
-      padding: 0;
+      text-align: center;
+      padding: 50px;
     }
-    .container {
-      max-width: 600px;
-      margin: 30px auto;
-      padding: 20px;
-      background: #1e1e1e;
-      border-radius: 10px;
+    h1 {
+      color: #2e7d32;
     }
-    input, select, textarea, button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
+    p {
+      font-size: 18px;
+      margin-bottom: 30px;
+    }
+    .btn {
+      padding: 15px 30px;
+      margin: 10px;
+      font-size: 16px;
       border: none;
-      border-radius: 6px;
-    }
-    button {
-      background: #00c853;
+      border-radius: 8px;
       color: white;
-      font-weight: bold;
       cursor: pointer;
     }
-    .hidden {
-      display: none;
-    }
-    #leaderboard div {
-      border-bottom: 1px solid #444;
-      padding: 5px 0;
-    }
+    .start { background: #00c853; }
+    .start:hover { background: #00b34d; }
+    .reyting { background: #2962ff; }
+    .reyting:hover { background: #0039cb; }
+    .delete { background: #d32f2f; }
+    .delete:hover { background: #b71c1c; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Tez yozish testiga xush kelibsiz!</h2>
-    <div id="register">
-      <input type="text" id="name" placeholder="Ismingiz">
-      <input type="text" id="phone" placeholder="Telefon raqamingiz">
-      <select id="duration">
-        <option value="">Test davomiyligini tanlang</option>
-        <option value="10">10 daqiqa</option>
-        <option value="20">20 daqiqa</option>
-        <option value="30">30 daqiqa</option>
-        <option value="40">40 daqiqa</option>
-        <option value="50">50 daqiqa</option>
-        <option value="60">60 daqiqa</option>
-      </select>
-      <button onclick="startTest()">Testni boshlash</button>
-    </div>
 
-    <div id="testArea" class="hidden">
-      <h3>Matn yozing (vaqt: <span id="timeLeft"></span> daqiqa)</h3>
-      <textarea id="typingBox" rows="10" placeholder="Yozishni shu yerda boshlang..."></textarea>
-    </div>
+  <h1>👋 Assalomu alaykum!</h1>
+  <p>Bu sayt orqali siz 10 soniyada qancha o‘zbekcha so‘z topa olishingizni sinab ko‘rishingiz mumkin!</p>
+  <button class="btn start" onclick="location.href='oyin.html'">🚀 Boshlash</button>
+  <button class="btn reyting" onclick="location.href='reyting.html'">🏆 Reyting</button>
+  <button class="btn delete" onclick="deleteAccount()">🗑 Akkauntni o‘chirish</button>
 
-    <div id="leaderboard">
-      <h3>🏆 Reyting</h3>
-      <div id="scoresList">Yuklanmoqda...</div>
-    </div>
-  </div>
+  <script>
+    const user = JSON.parse(localStorage.getItem("sozUser"));
+    if (!user) window.location.href = "register.html";
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyB1KIzGCvifH-lzNzOtY0F__AL6PU7_B_Y",
-      authDomain: "elbekproductions.firebaseapp.com",
-      databaseURL: "https://elbekproductions-default-rtdb.firebaseio.com",
-      projectId: "elbekproductions",
-      storageBucket: "elbekproductions.appspot.com",
-      messagingSenderId: "467619718063",
-      appId: "1:467619718063:web:f370881cffbb396899c55a"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    let countdown;
-    let selectedMinutes = 0;
-    let currentUserId = "";
-    const typingBox = document.getElementById("typingBox");
-
-    window.startTest = function () {
-      const name = document.getElementById("name").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      selectedMinutes = parseInt(document.getElementById("duration").value);
-
-      if (!name || !phone || !selectedMinutes) {
-        alert("Iltimos, barcha maydonlarni to‘ldiring!");
-        return;
+    function deleteAccount() {
+      if (confirm("Akkauntingizni o‘chirmoqchimisiz?")) {
+        localStorage.removeItem("sozUser");
+        alert("Akkaunt o‘chirildi.");
+        window.location.href = "register.html";
       }
-
-      currentUserId = phone;
-
-      document.getElementById("register").classList.add("hidden");
-      document.getElementById("testArea").classList.remove("hidden");
-      document.getElementById("timeLeft").textContent = selectedMinutes;
-
-      let time = selectedMinutes * 60;
-      typingBox.value = "";
-      typingBox.focus();
-
-      countdown = setInterval(() => {
-        time--;
-        document.getElementById("timeLeft").textContent = Math.ceil(time / 60);
-        if (time <= 0) {
-          clearInterval(countdown);
-          finishTest(name, phone);
-        }
-      }, 1000);
     }
-
-    function finishTest(name, phone) {
-      const text = typingBox.value.trim();
-      const score = text.length;
-
-      const userRef = ref(db, "typingUsers/" + phone);
-      onValue(userRef, (snapshot) => {
-        const data = snapshot.val();
-        if (!data || score > data.score) {
-          set(userRef, {
-            name,
-            phone,
-            score
-          });
-        }
-      }, {
-        onlyOnce: true
-      });
-
-      alert("Test tugadi! Siz " + score + " ta belgi yozdingiz.");
-      location.reload();
-    }
-
-    // Reytingni yuklash
-    const scoresList = document.getElementById("scoresList");
-    const usersRef = ref(db, "typingUsers/");
-    onValue(usersRef, (snapshot) => {
-      const data = snapshot.val();
-      scoresList.innerHTML = "";
-
-      if (data) {
-        const sorted = Object.values(data).sort((a, b) => b.score - a.score);
-        sorted.forEach((user, i) => {
-          scoresList.innerHTML += `<div><strong>${i + 1}.</strong> ${user.name} (${user.phone}) – ${user.score} belgi</div>`;
-        });
-      } else {
-        scoresList.innerHTML = "Hozircha foydalanuvchilar yo‘q.";
-      }
-    });
   </script>
+
 </body>
 </html>
