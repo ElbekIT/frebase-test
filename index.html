@@ -1,28 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
   <meta charset="UTF-8">
-  <title>ElbekProductions - Realtime Reyting</title>
-  <script type="module" src="main.js" defer></script>
+  <title>Tez Yozish Testi</title>
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
   <style>
     body {
       font-family: sans-serif;
       background: #121212;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      padding-top: 50px;
+      color: #fff;
+      margin: 0;
+      padding: 0;
     }
-    .box {
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 20px;
       background: #1e1e1e;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-      width: 400px;
+      border-radius: 10px;
     }
-    input, button {
+    input, select, textarea, button {
       width: 100%;
       padding: 10px;
       margin: 10px 0;
@@ -35,33 +33,134 @@
       font-weight: bold;
       cursor: pointer;
     }
-    button:hover {
-      background: #00e676;
+    .hidden {
+      display: none;
     }
-    #usersList {
-      margin-top: 20px;
-      background: #2a2a2a;
-      padding: 10px;
-      border-radius: 8px;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-    #usersList div {
-      padding: 5px;
+    #leaderboard div {
       border-bottom: 1px solid #444;
+      padding: 5px 0;
     }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h2>Foydalanuvchi qo'shish</h2>
-    <input type="text" id="userId" placeholder="User ID">
-    <input type="text" id="name" placeholder="Ismingiz">
-    <input type="email" id="email" placeholder="Email manzil">
-    <button onclick="saveUser()">Saqlash</button>
-    <button onclick="loadUsers()">Reytingni ko‘rish</button>
+  <div class="container">
+    <h2>Tez yozish testiga xush kelibsiz!</h2>
+    <div id="register">
+      <input type="text" id="name" placeholder="Ismingiz">
+      <input type="text" id="phone" placeholder="Telefon raqamingiz">
+      <select id="duration">
+        <option value="">Test davomiyligini tanlang</option>
+        <option value="10">10 daqiqa</option>
+        <option value="20">20 daqiqa</option>
+        <option value="30">30 daqiqa</option>
+        <option value="40">40 daqiqa</option>
+        <option value="50">50 daqiqa</option>
+        <option value="60">60 daqiqa</option>
+      </select>
+      <button onclick="startTest()">Testni boshlash</button>
+    </div>
 
-    <div id="usersList"></div>
+    <div id="testArea" class="hidden">
+      <h3>Matn yozing (vaqt: <span id="timeLeft"></span> daqiqa)</h3>
+      <textarea id="typingBox" rows="10" placeholder="Yozishni shu yerda boshlang..."></textarea>
+    </div>
+
+    <div id="leaderboard">
+      <h3>🏆 Reyting</h3>
+      <div id="scoresList">Yuklanmoqda...</div>
+    </div>
   </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB1KIzGCvifH-lzNzOtY0F__AL6PU7_B_Y",
+      authDomain: "elbekproductions.firebaseapp.com",
+      databaseURL: "https://elbekproductions-default-rtdb.firebaseio.com",
+      projectId: "elbekproductions",
+      storageBucket: "elbekproductions.appspot.com",
+      messagingSenderId: "467619718063",
+      appId: "1:467619718063:web:f370881cffbb396899c55a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    let countdown;
+    let selectedMinutes = 0;
+    let currentUserId = "";
+    const typingBox = document.getElementById("typingBox");
+
+    window.startTest = function () {
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      selectedMinutes = parseInt(document.getElementById("duration").value);
+
+      if (!name || !phone || !selectedMinutes) {
+        alert("Iltimos, barcha maydonlarni to‘ldiring!");
+        return;
+      }
+
+      currentUserId = phone;
+
+      document.getElementById("register").classList.add("hidden");
+      document.getElementById("testArea").classList.remove("hidden");
+      document.getElementById("timeLeft").textContent = selectedMinutes;
+
+      let time = selectedMinutes * 60;
+      typingBox.value = "";
+      typingBox.focus();
+
+      countdown = setInterval(() => {
+        time--;
+        document.getElementById("timeLeft").textContent = Math.ceil(time / 60);
+        if (time <= 0) {
+          clearInterval(countdown);
+          finishTest(name, phone);
+        }
+      }, 1000);
+    }
+
+    function finishTest(name, phone) {
+      const text = typingBox.value.trim();
+      const score = text.length;
+
+      const userRef = ref(db, "typingUsers/" + phone);
+      onValue(userRef, (snapshot) => {
+        const data = snapshot.val();
+        if (!data || score > data.score) {
+          set(userRef, {
+            name,
+            phone,
+            score
+          });
+        }
+      }, {
+        onlyOnce: true
+      });
+
+      alert("Test tugadi! Siz " + score + " ta belgi yozdingiz.");
+      location.reload();
+    }
+
+    // Reytingni yuklash
+    const scoresList = document.getElementById("scoresList");
+    const usersRef = ref(db, "typingUsers/");
+    onValue(usersRef, (snapshot) => {
+      const data = snapshot.val();
+      scoresList.innerHTML = "";
+
+      if (data) {
+        const sorted = Object.values(data).sort((a, b) => b.score - a.score);
+        sorted.forEach((user, i) => {
+          scoresList.innerHTML += `<div><strong>${i + 1}.</strong> ${user.name} (${user.phone}) – ${user.score} belgi</div>`;
+        });
+      } else {
+        scoresList.innerHTML = "Hozircha foydalanuvchilar yo‘q.";
+      }
+    });
+  </script>
 </body>
 </html>
