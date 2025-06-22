@@ -7,118 +7,197 @@
   <script type="module" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
   <script type="module" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
     body {
-      background: #0f2027;
-      background: linear-gradient(135deg, #232526 0%, #0f2027 100%);
-      font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
-      color: #00ff41;
-      padding: 40px 0;
+      background: linear-gradient(135deg, #f8ffae 0%, #43c6ac 100%);
+      font-family: 'Montserrat', Arial, sans-serif;
+      color: #222;
+      padding: 48px 0 0 0;
       text-align: center;
       min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
     }
+
     h1 {
-      color: #00ff41;
-      margin-bottom: 28px;
-      font-size: 2.5rem;
+      color: #2e7d32;
+      margin-bottom: 32px;
+      font-size: 2.6rem;
       letter-spacing: 2px;
-      text-shadow: 0 0 12px #00ff41, 0 2px 8px #000;
-      font-family: 'Fira Mono', monospace;
+      text-shadow: 0 2px 12px #b2f7ef60;
+      font-family: 'Montserrat', Arial, sans-serif;
+      font-weight: 700;
     }
+
     #scores {
-      max-width: 520px;
+      max-width: 540px;
       margin: 0 auto;
-      background: rgba(20, 30, 20, 0.95);
-      border-radius: 14px;
-      padding: 28px 24px;
-      box-shadow: 0 4px 24px #00ff4160;
+      background: #fff;
+      border-radius: 18px;
+      padding: 36px 28px 28px 28px;
+      box-shadow: 0 8px 32px #43c6ac40, 0 1.5px 0 #43c6ac;
       text-align: left;
-      font-size: 1.15rem;
-      border: 1.5px solid #00ff41;
+      font-size: 1.18rem;
+      border: 2px solid #43c6ac;
+      backdrop-filter: blur(1.5px);
+      overflow: hidden;
     }
+
+    .score-list {
+      max-height: 520px;
+      overflow-y: auto;
+      padding-right: 6px;
+      scrollbar-width: thin;
+      scrollbar-color: #43c6ac40 #f8ffae;
+    }
+
+    .score-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .score-list::-webkit-scrollbar-thumb {
+      background: #43c6ac80;
+      border-radius: 6px;
+    }
+
+    .score-list::-webkit-scrollbar-track {
+      background: #f8ffae60;
+    }
+
     .score-item {
-      border-bottom: 1px solid #00ff4160;
-      padding: 14px 0;
+      border-bottom: 1.5px solid #43c6ac40;
+      padding: 18px 0 14px 0;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 18px;
       font-weight: 500;
-      transition: background 0.2s;
-      font-family: 'Fira Mono', monospace;
+      font-family: 'Montserrat', Arial, sans-serif;
+      font-size: 1.13rem;
+      transition: background 0.2s, box-shadow 0.2s;
+      cursor: pointer;
     }
+
+    .score-item:hover {
+      background: linear-gradient(90deg, #e0f7fa 0%, #f8ffae 100%);
+      box-shadow: 0 2px 16px #43c6ac30;
+    }
+
     .score-item:nth-child(1) {
-      background: linear-gradient(90deg, #003300 0%, #00ff4130 100%);
-      font-size: 1.18rem;
-      color: #00ff41;
-      font-weight: 700;
-      border-radius: 8px 8px 0 0;
-      text-shadow: 0 0 8px #00ff41;
+      background: linear-gradient(90deg, #fffde4 0%, #43c6ac30 100%);
+      font-size: 1.22rem;
+      color: #2e7d32;
+      font-weight: 800;
+      border-radius: 10px 10px 0 0;
+      text-shadow: 0 0 12px #b2f7ef60;
+    }
+    .score-item:nth-child(1)::before {
+      content: "🥇";
+      font-size: 1.5em;
+      margin-right: 10px;
+      filter: drop-shadow(0 0 8px #ffe082);
     }
     .score-item:nth-child(2) {
-      background: linear-gradient(90deg, #002222 0%, #00bfae30 100%);
-      color: #00bfae;
-      font-weight: 600;
-      text-shadow: 0 0 6px #00bfae;
+      background: linear-gradient(90deg, #e0f7fa 0%, #b2f7ef30 100%);
+      color: #00838f;
+      font-weight: 700;
+      text-shadow: 0 0 8px #b2f7ef;
+    }
+    .score-item:nth-child(2)::before {
+      content: "🥈";
+      font-size: 1.4em;
+      margin-right: 10px;
+      filter: drop-shadow(0 0 8px #b2f7ef);
     }
     .score-item:nth-child(3) {
-      background: linear-gradient(90deg, #222200 0%, #ffee0030 100%);
-      color: #ffee00;
-      font-weight: 600;
-      text-shadow: 0 0 6px #ffee00;
+      background: linear-gradient(90deg, #fffde4 0%, #ffe08230 100%);
+      color: #ffb300;
+      font-weight: 700;
+      text-shadow: 0 0 8px #ffe082;
     }
+    .score-item:nth-child(3)::before {
+      content: "🥉";
+      font-size: 1.3em;
+      margin-right: 10px;
+      filter: drop-shadow(0 0 8px #ffe082);
+    }
+
     .score-item:last-child {
       border-bottom: none;
     }
+
     .score-item strong {
-      min-width: 32px;
+      min-width: 36px;
       display: inline-block;
       text-align: right;
-      font-size: 1.1em;
-      color: #00ff41;
-      text-shadow: 0 0 8px #00ff41;
+      font-size: 1.13em;
+      color: #43c6ac;
+      text-shadow: 0 0 10px #b2f7ef60;
+      letter-spacing: 1px;
     }
+
     .back-btn {
-      margin-top: 36px;
-      padding: 12px 32px;
-      font-size: 1.1rem;
+      margin-top: 44px;
+      padding: 14px 38px;
+      font-size: 1.18rem;
       border: none;
-      border-radius: 10px;
-      background: linear-gradient(90deg, #003300 0%, #00ff41 100%);
-      color: #0f2027;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #43c6ac 0%, #f8ffae 100%);
+      color: #2e7d32;
       cursor: pointer;
-      font-weight: 600;
-      box-shadow: 0 2px 16px #00ff4140;
-      transition: background 0.2s, transform 0.1s, color 0.2s;
-      font-family: 'Fira Mono', monospace;
-      text-shadow: 0 0 8px #00ff41;
+      font-weight: 700;
+      box-shadow: 0 4px 24px #43c6ac40;
+      transition: background 0.2s, transform 0.1s, color 0.2s, box-shadow 0.2s;
+      font-family: 'Montserrat', Arial, sans-serif;
+      text-shadow: 0 0 10px #b2f7ef60;
     }
+
     .back-btn:hover {
-      background: linear-gradient(90deg, #00ff41 0%, #003300 100%);
-      color: #fff;
-      transform: translateY(-2px) scale(1.03);
-      box-shadow: 0 4px 24px #00ff41;
+      background: linear-gradient(90deg, #f8ffae 0%, #43c6ac 100%);
+      color: #00838f;
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 0 8px 32px #43c6ac;
+      letter-spacing: 1.5px;
     }
+
     ::selection {
-      background: #00ff41;
-      color: #0f2027;
+      background: #43c6ac;
+      color: #fff;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg);}
+      100% { transform: rotate(360deg);}
+    }
+
+    @media (max-width: 600px) {
+      #scores {
+        padding: 18px 6px 14px 6px;
+        font-size: 1.01rem;
+      }
+      h1 {
+        font-size: 1.6rem;
+      }
+      .back-btn {
+        padding: 10px 18px;
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
 <body>
 
-    <h1>🏆 Reyting</h1>
-    <div id="scores">
+  <h1>🏆 Kim Kuchli</h1>
+  <div id="scores">
+    <div class="score-list">
       <div style="display: flex; flex-direction: column; align-items: center; padding: 32px 0;">
-            <div style="border: 4px solid #e0f7fa; border-top: 4px solid #00c853; border-radius: 50%; width: 48px; height: 48px; animation: spin 1s linear infinite;"></div>
-            <div style="margin-top: 16px; color: #00c853; font-weight: 500;">Yuklanmoqda...</div>
-        </div>
+        <div style="border: 4px solid #e0f7fa; border-top: 4px solid #00c853; border-radius: 50%; width: 48px; height: 48px; animation: spin 1s linear infinite;"></div>
+        <div style="margin-top: 16px; color: #00c853; font-weight: 500;">Yuklanmoqda...</div>
+      </div>
     </div>
-    <style>
-        @keyframes spin {
-            0% { transform: rotate(0deg);}
-            100% { transform: rotate(360deg);}
-        }
-    </style>
-<button class="back-btn" onclick="location.href='index.html'">⬅️ Ortga</button>
+  </div>
+
+  <button class="back-btn" onclick="location.href='index.html'">⬅️ Ortga</button>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -137,7 +216,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const scoresDiv = document.getElementById("scores");
+    const scoresDiv = document.querySelector(".score-list");
     const usersRef = ref(db, "users");
 
     onValue(usersRef, (snapshot) => {
@@ -148,7 +227,7 @@
         sorted.forEach((u, i) => {
           scoresDiv.innerHTML += `
             <div class="score-item">
-              <strong>${i + 1}.</strong> ${u.name} (${u.phone}) – ${u.score} ball
+              <strong>${i + 1}.</strong> ${u.name} – ${u.score} ball
             </div>`;
         });
       } else {
@@ -158,4 +237,4 @@
   </script>
 
 </body>
-</html> 
+</html>

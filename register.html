@@ -139,7 +139,7 @@
   <div class="register-box">
     <h2>📝 Ro‘yxatdan o‘tish</h2>
     <input type="text" id="name" placeholder="Ismingizni kiriting" />
-    <input type="text" id="phone" placeholder="Telefon raqamingiz" />
+    <input type="text" id="name" placeholder="Telegram user yozing" />
     <button onclick="register()">Kirish</button>
   </div>
 
@@ -157,7 +157,7 @@
         return;
       }
 
-      const user = { name, phone };
+      const user = { name, name };
       localStorage.setItem("sozUser", JSON.stringify(user));
 
       window.location.href = "index.html";
