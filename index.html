@@ -5,16 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Bosh Sahifa</title>
   <style>
-    body {
+    /* Hacker Pro Design */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #0f2027; /* fallback */
       background: linear-gradient(135deg, #0f2027 0%, #2c5364 100%);
       color: #00ff90;
-      font-family: monospace;
+      font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
       overflow: hidden;
+    }
+    body {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh;
+      padding: 30px;
+      position: relative;
+      text-shadow: 0 0 2px #00ff90, 0 0 10px #00ff9033;
     }
     .topbar {
       position: absolute;
@@ -24,35 +38,135 @@
       border: 1.5px solid #00ff90;
       padding: 12px 28px;
       border-radius: 16px;
+      box-shadow: 0 2px 16px #00ff9033;
       font-weight: bold;
+      color: #00ff90;
+      letter-spacing: 1px;
       font-size: 1.1rem;
+      text-shadow: 0 0 4px #00ff9099;
     }
     h1 {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
+      color: #00ff90;
+      font-size: 2.8rem;
+      margin-bottom: 22px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-shadow: 0 0 8px #00ff90, 0 0 24px #00ff9044;
+      filter: brightness(1.2);
     }
     p {
-      font-size: 1.2rem;
-      text-align: center;
-      margin-bottom: 30px;
+      font-size: 1.18rem;
+      margin-bottom: 32px;
+      color: #e0ffe0;
+      max-width: 600px;
+      background: rgba(15,32,39,0.85);
+      border-left: 4px solid #00ff90;
+      border-radius: 10px;
+      padding: 20px 18px;
+      box-shadow: 0 2px 18px #00ff9022;
+      font-family: 'Fira Mono', monospace;
     }
-    select, .btn {
-      font-size: 1rem;
-      padding: 12px 20px;
-      margin: 10px;
-      border-radius: 8px;
+    label {
+      font-size: 1.08rem;
+      color: #00ff90;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: inline-block;
+      letter-spacing: 1px;
+      text-shadow: 0 0 2px #00ff90;
+    }
+    select {
+      padding: 13px 28px;
+      border-radius: 10px;
       border: 1.5px solid #00ff90;
+      font-size: 1.05rem;
       background: #16222a;
       color: #00ff90;
+      margin-top: 12px;
+      margin-bottom: 26px;
+      box-shadow: 0 1px 8px #00ff9022;
+      outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
+    }
+    select:focus {
+      border-color: #00ffcc;
+      box-shadow: 0 0 0 2px #00ffcc44;
     }
     .btn {
+      padding: 16px 38px;
+      margin: 12px;
+      font-size: 1.08rem;
+      border: 1.5px solid #00ff90;
+      border-radius: 14px;
+      color: #0f2027;
+      background: linear-gradient(90deg, #00ff90 0%, #00e0c6 100%);
       cursor: pointer;
+      box-shadow: 0 4px 18px #00ff9033, 0 0 0 2px #00ff9022 inset;
+      font-weight: 800;
+      letter-spacing: 1px;
+      transition: background 0.18s, color 0.18s, transform 0.1s, box-shadow 0.18s;
+      text-shadow: none;
+    }
+    .btn:active {
+      transform: scale(0.96);
+      box-shadow: 0 2px 8px #00ff9022;
+    }
+    .start {
       background: linear-gradient(90deg, #00ff90 0%, #00e0c6 100%);
       color: #0f2027;
     }
-    .btn:hover {
+    .start:hover {
       background: linear-gradient(90deg, #00e0c6 0%, #00ff90 100%);
-      color: white;
+      color: #0f2027;
+      box-shadow: 0 0 16px #00ff9099;
+    }
+    .reyting {
+      background: linear-gradient(90deg, #00c3ff 0%, #00ff90 100%);
+      color: #0f2027;
+      border-color: #00c3ff;
+    }
+    .reyting:hover {
+      background: linear-gradient(90deg, #00ff90 0%, #00c3ff 100%);
+      color: #0f2027;
+      box-shadow: 0 0 16px #00c3ff99;
+    }
+    .delete {
+      background: linear-gradient(90deg, #ff1744 0%, #ff8a65 100%);
+      color: #fff;
+      border-color: #ff1744;
+      text-shadow: 0 0 2px #ff1744;
+    }
+    .delete:hover {
+      background: linear-gradient(90deg, #ff8a65 0%, #ff1744 100%);
+      color: #fff;
+      box-shadow: 0 0 16px #ff174499;
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+      background: #16222a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #00ff90;
+      border-radius: 8px;
+    }
+    @media (max-width: 600px) {
+      .topbar {
+        right: 10px;
+        top: 10px;
+        padding: 8px 14px;
+        font-size: 0.95rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+      p {
+        font-size: 1rem;
+        padding: 12px 6px;
+      }
+      .btn {
+        padding: 12px 18px;
+        font-size: 0.98rem;
+      }
     }
   </style>
 </head>
@@ -61,7 +175,7 @@
   <div class="topbar" id="usernameBox">👤 Foydalanuvchi</div>
 
   <h1>👋 Assalomu alaykum!</h1>
-  <p>Bu sayt orqali siz tanlagan vaqt ichida qancha o‘zbekcha so‘z topa olishingizni sinab ko‘rishingiz mumkin!</p>
+  <p>Bu sayt o</div>rqali siz tanlagan vaqt ichida qancha o‘zbekcha so‘z topa olishingizni sinab ko‘rishingiz mumkin!</p>
 
   <label for="duration">⏱ O‘yin davomiyligini tanlang (soniya):</label><br>
   <select id="duration">
@@ -71,16 +185,16 @@
     <option value="60">60 soniya</option>
   </select>
 
-  <div>
-    <button class="btn" onclick="startGame()">🚀 Boshlash</button>
-    <button class="btn" onclick="location.href='reyting.html'">🏆 Reyting</button>
-    <button class="btn" onclick="deleteAccount()">🗑 Akkauntni o‘chirish</button>
-  </div>
+  <br><br>
+  <button class="btn start" onclick="startGame()">🚀 Boshlash</button>
+  <button class="btn reyting" onclick="location.href='reyting.html'">🏆 Reyting</button>
+  <button class="btn delete" onclick="deleteAccount()">🗑 Akkauntni o‘chirish</button>
 
   <script>
     const user = JSON.parse(localStorage.getItem("sozUser"));
     if (!user) window.location.href = "register.html";
 
+    // Foydalanuvchi ismini chiqarish
     document.getElementById("usernameBox").textContent = `👤 ${user.name}`;
 
     function startGame() {
@@ -97,5 +211,6 @@
       }
     }
   </script>
+
 </body>
 </html>
