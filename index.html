@@ -159,6 +159,48 @@
         font-size: 0.97rem;
       }
     }
+
+    /* like */
+
+      .like-container {
+    margin-top: 40px;
+    text-align: center;
+  }
+  .like-btn {
+    font-size: 48px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .like-btn:hover {
+    transform: scale(1.1);
+  }
+  .like-count {
+    font-size: 20px;
+    color: #2e7d32;
+    margin-top: 8px;
+    font-weight: bold;
+  }
+  .like-bar {
+    width: 200px;
+    height: 14px;
+    background: #ddd;
+    border-radius: 7px;
+    overflow: hidden;
+    margin: 10px auto;
+  }
+  .like-fill {
+    height: 100%;
+    background: #4caf50;
+    width: 0%;
+    transition: width 0.3s;
+  }
+  #likePercent {
+    font-size: 16px;
+    color: #555;
+    margin-top: 4px;
+  }
   </style>
 </head>
 <body>
@@ -175,7 +217,14 @@
     <option value="30">30 soniya</option>
     <option value="60">60 soniya</option>
   </select>
-
+<div class="like-container">
+  <button class="like-btn" onclick="handleLike()">👍</button>
+  <div class="like-count" id="likeCount">Yuklanmoqda...</div>
+  <div class="like-bar">
+    <div class="like-fill" id="likeFill"></div>
+  </div>
+  <div id="likePercent"></div>
+</div>
   <br><br>
   <button class="btn start" onclick="startGame()">🚀 Boshlash</button>
   <button class="btn reyting" onclick="location.href='reyting.html'">🏆 Reyting</button>
@@ -188,6 +237,45 @@
       Akkauntni o‘chirish
     </button>
   </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, get, set, runTransaction, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB1KIzGCvifH-lzNzOtY0F__AL6PU7_B_Y",
+    authDomain: "elbekproductions.firebaseapp.com",
+    databaseURL: "https://elbekproductions-default-rtdb.firebaseio.com",
+    projectId: "elbekproductions",
+    storageBucket: "elbekproductions.appspot.com",
+    messagingSenderId: "467619718063",
+    appId: "1:467619718063:web:f370881cffbb396899c55a"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const likesRef = ref(db, "globalLikes/count");
+  const maxLikes = 100;
+
+  function updateUI(likes) {
+    document.getElementById("likeCount").textContent = `${likes} ta yoqdi`;
+    const percent = Math.min((likes / maxLikes) * 100, 100).toFixed(1);
+    document.getElementById("likeFill").style.width = percent + "%";
+    document.getElementById("likePercent").textContent = percent + "%";
+  }
+
+  function handleLike() {
+    runTransaction(likesRef, current => (current || 0) + 1);
+  }
+
+  // Real-time update
+  onValue(likesRef, (snapshot) => {
+    const count = snapshot.val() || 0;
+    updateUI(count);
+  });
+</script>
+
+
 
   <script>
     const user = JSON.parse(localStorage.getItem("sozUser"));
