@@ -139,23 +139,25 @@
   <div class="register-box">
     <h2>📝 Ro‘yxatdan o‘tish</h2>
     <input type="text" id="name" placeholder="Ismingizni kiriting" />
+    <input type="text" id="phone" placeholder="Telefon raqamingiz" />
     <button onclick="register()">Kirish</button>
   </div>
 
   <script>
     if (localStorage.getItem("sozUser")) {
-      window.location.href = "index.html";
+      window.location.href = "index.html ";
     }
 
     function register() {
       const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
 
-      if (!name) {
-        alert("Iltimos, ismingizni kiriting.");
+      if (!name || !phone) {
+        alert("Iltimos, barcha maydonlarni to‘ldiring.");
         return;
       }
 
-      const user = { name };
+      const user = { name, phone };
       localStorage.setItem("sozUser", JSON.stringify(user));
 
       window.location.href = "index.html";
