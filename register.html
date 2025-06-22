@@ -1,74 +1,70 @@
-<!-- == 📄 register.html == -->
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ro‘yxatdan o‘tish - So‘z Topish</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reyting</title>
   <style>
     body {
-      background: linear-gradient(120deg, #0f2027 0%, #2c5364 100%);
+      background: #1a1a1a;
+      color: #00ff90;
       font-family: monospace;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       height: 100vh;
-      margin: 0;
-      overflow: hidden;
     }
-    .register-box {
-      background: rgba(20, 24, 31, 0.98);
-      padding: 40px;
-      border-radius: 18px;
-      box-shadow: 0 10px 40px rgba(0,255,128,0.18);
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-      border: 1.5px solid #00ff99;
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      color: lime;
+      text-shadow: 0 0 10px lime;
     }
-    h2 {
-      color: #00ff99;
+    .list {
+      background: #111;
+      border: 2px solid lime;
+      padding: 20px;
+      border-radius: 12px;
+      width: 80%;
+      max-width: 500px;
     }
-    input, button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 14px;
-      border-radius: 10px;
-      font-size: 16px;
+    .user {
+      padding: 10px;
+      margin: 5px 0;
+      background: #003300;
+      border-radius: 8px;
     }
-    input {
-      border: 1px solid #00ff99;
-      background: #181c23;
-      color: #00ff99;
-    }
-    button {
-      background: linear-gradient(90deg, #00ff99 0%, #00e6e6 100%);
+    .btn {
+      margin-top: 30px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 8px;
+      background: limegreen;
+      color: black;
       border: none;
-      color: #000;
-      font-weight: bold;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div class="register-box">
-    <h2>📝 Ro‘yxatdan o‘tish</h2>
-    <input type="text" id="name" placeholder="Ismingizni kiriting" />
-    <button onclick="register()">Kirish</button>
-  </div>
+  <h1>🏆 Reyting</h1>
+  <div class="list" id="ratingList"></div>
+  <button class="btn" onclick="window.location.href='index.html'">⬅️ Ortga</button>
+
   <script>
-    if (localStorage.getItem("sozUser")) {
-      window.location.href = "index.html";
-    }
-    function register() {
-      const name = document.getElementById("name").value.trim();
-      if (!name) {
-        alert("Ismingizni kiriting.");
-        return;
-      }
-      const user = { name };
-      localStorage.setItem("sozUser", JSON.stringify(user));
-      window.location.href = "index.html";
-    }
+    const leaderboard = JSON.parse(localStorage.getItem("sozLeaderboard")) || [];
+
+    leaderboard.sort((a, b) => b.score - a.score);
+
+    const list = document.getElementById("ratingList");
+
+    leaderboard.forEach((user, index) => {
+      const item = document.createElement("div");
+      item.className = "user";
+      item.textContent = `${index + 1}. ${user.name} – ${user.score} ball`;
+      list.appendChild(item);
+    });
   </script>
 </body>
 </html>
