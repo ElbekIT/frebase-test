@@ -208,7 +208,7 @@
   <div class="topbar" id="usernameBox">👤 Foydalanuvchi</div>
 
   <h1>👋 Assalomu alaykum!</h1>
-  <p>Bu sayt o</div>rqali siz tanlagan vaqt ichida qancha o‘zbekcha so‘z topa olishingizni sinab ko‘rishingiz mumkin!</p>
+  <p>Bu sayt orqali siz tanlagan vaqt ichida qancha o‘zbekcha so‘z topa olishingizni sinab ko‘rishingiz mumkin!</p>
 
   <label for="duration">⏱ O‘yin davomiyligini tanlang (soniya):</label><br>
   <select id="duration">
@@ -217,20 +217,19 @@
     <option value="30">30 soniya</option>
     <option value="60">60 soniya</option>
   </select>
-<div class="like-container">
-  <button class="like-btn" onclick="handleLike()">👍</button>
-  <div class="like-count" id="likeCount">Yuklanmoqda...</div>
-  <div class="like-bar">
-    <div class="like-fill" id="likeFill"></div>
+  <div class="like-container"></div>
+    <button class="like-btn" onclick="handleLike()">👍</button>
+    <div class="like-count" id="likeCount">Yuklanmoqda...</div>
+    <div class="like-bar">
+      <div class="like-fill" id="likeFill"></div>
+    </div>
+    <div id="likePercent"></div>
   </div>
-  <div id="likePercent"></div>
-</div>
   <br><br>
   <button class="btn start" onclick="startGame()">🚀 Boshlash</button>
   <button class="btn reyting" onclick="location.href='reyting.html'">🏆 Reyting</button>
   <div style="position: fixed; bottom: 18px; left: 18px;">
     <button onclick="deleteAccount()" style="display: flex; align-items: center; gap: 6px; background: #ff5f6d; color: #fff; border: none; border-radius: 6px; padding: 8px 14px; font-size: 1rem; cursor: pointer;">
-      <!-- Savatcha (delete/trash) ikonkasi -->
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#fff" viewBox="0 0 24 24">
         <path d="M3 6h18v2H3V6zm2 3h14l-1.5 12.5c-.1.8-.8 1.5-1.6 1.5H8.1c-.8 0-1.5-.7-1.6-1.5L5 9zm5 2v7h2v-7h-2zm4 0v7h2v-7h-2zm-8 0v7h2v-7H7z"/>
       </svg>
@@ -238,44 +237,42 @@
     </button>
   </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, get, set, runTransaction, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, get, set, runTransaction, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyB1KIzGCvifH-lzNzOtY0F__AL6PU7_B_Y",
-    authDomain: "elbekproductions.firebaseapp.com",
-    databaseURL: "https://elbekproductions-default-rtdb.firebaseio.com",
-    projectId: "elbekproductions",
-    storageBucket: "elbekproductions.appspot.com",
-    messagingSenderId: "467619718063",
-    appId: "1:467619718063:web:f370881cffbb396899c55a"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyB1KIzGCvifH-lzNzOtY0F__AL6PU7_B_Y",
+      authDomain: "elbekproductions.firebaseapp.com",
+      databaseURL: "https://elbekproductions-default-rtdb.firebaseio.com",
+      projectId: "elbekproductions",
+      storageBucket: "elbekproductions.appspot.com",
+      messagingSenderId: "467619718063",
+      appId: "1:467619718063:web:f370881cffbb396899c55a"
+    };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  const likesRef = ref(db, "globalLikes/count");
-  const maxLikes = 100;
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const likesRef = ref(db, "globalLikes/count");
+    const maxLikes = 100;
 
-  function updateUI(likes) {
-    document.getElementById("likeCount").textContent = `${likes} ta yoqdi`;
-    const percent = Math.min((likes / maxLikes) * 100, 100).toFixed(1);
-    document.getElementById("likeFill").style.width = percent + "%";
-    document.getElementById("likePercent").textContent = percent + "%";
-  }
+    function updateUI(likes) {
+      document.getElementById("likeCount").textContent = `${likes} ta yoqdi`;
+      const percent = Math.min((likes / maxLikes) * 100, 100).toFixed(1);
+      document.getElementById("likeFill").style.width = percent + "%";
+      document.getElementById("likePercent").textContent = percent + "%";
+    }
 
-  function handleLike() {
-    runTransaction(likesRef, current => (current || 0) + 1);
-  }
+    window.handleLike = function() {
+      runTransaction(likesRef, current => (current || 0) + 1);
+    }
 
-  // Real-time update
-  onValue(likesRef, (snapshot) => {
-    const count = snapshot.val() || 0;
-    updateUI(count);
-  });
-</script>
-
-
+    // Real-time update
+    onValue(likesRef, (snapshot) => {
+      const count = snapshot.val() || 0;
+      updateUI(count);
+    });
+  </script>
 
   <script>
     const user = JSON.parse(localStorage.getItem("sozUser"));
@@ -284,13 +281,13 @@
     // Foydalanuvchi ismini chiqarish
     document.getElementById("usernameBox").textContent = `👤 ${user.name}`;
 
-    function startGame() {
+    window.startGame = function() {
       const selectedTime = document.getElementById("duration").value;
       localStorage.setItem("sozTime", selectedTime);
       window.location.href = "oyin.html";
     }
 
-    function deleteAccount() {
+    window.deleteAccount = function() {
       if (confirm("Akkauntingizni o‘chirmoqchimisiz?")) {
         localStorage.removeItem("sozUser");
         alert("Akkaunt o‘chirildi.");
@@ -298,7 +295,7 @@
       }
     }
   </script>
-    <style>
+  <style>
     html, body {
       scrollbar-width: none !important;
     }
@@ -306,6 +303,4 @@
       display: none !important;
     }
   </style>
-
-</body>
 </html>
