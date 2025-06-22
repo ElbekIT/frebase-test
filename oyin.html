@@ -8,58 +8,122 @@
   <script type="module" src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
   <style>
     body {
-      font-family: sans-serif;
-      background: #fffde7;
+      font-family: 'Fira Mono', 'JetBrains Mono', 'Consolas', monospace;
+      background: linear-gradient(135deg, #0f2027 0%, #2c5364 100%);
+      color: #e0e0e0;
       text-align: center;
       padding: 40px;
+      min-height: 100vh;
     }
     h1 {
-      color: #2e7d32;
+      color: #00ff41;
+      text-shadow: 0 0 8px #00ff41, 0 0 2px #222;
+      font-family: 'Fira Mono', monospace;
+      letter-spacing: 2px;
+      font-size: 2.5em;
     }
     #wordBox {
-      font-size: 32px;
-      margin: 20px 0;
+      font-size: 36px;
+      margin: 30px 0;
       font-weight: bold;
+      color: #00ff41;
+      background: rgba(0,0,0,0.7);
+      border: 2px solid #00ff41;
+      border-radius: 10px;
+      padding: 18px 0;
+      letter-spacing: 3px;
+      box-shadow: 0 0 16px #00ff41;
+      transition: background 0.2s;
     }
     #inputWord {
-      font-size: 20px;
-      padding: 10px;
-      width: 60%;
-      border: 1px solid #ccc;
+      font-size: 22px;
+      padding: 12px;
+      width: 65%;
+      border: 2px solid #00ff41;
       border-radius: 8px;
+      background: #111;
+      color: #00ff41;
+      outline: none;
+      margin-bottom: 10px;
+      box-shadow: 0 0 8px #00ff41 inset;
+      transition: border 0.2s;
+    }
+    #inputWord:focus {
+      border: 2px solid #fff;
     }
     #timer {
-      font-size: 22px;
-      color: #f57c00;
-      margin: 15px 0;
+      font-size: 24px;
+      color: #ffea00;
+      margin: 18px 0;
+      text-shadow: 0 0 8px #ffea00;
+      font-family: 'Fira Mono', monospace;
     }
     #score {
-      font-size: 20px;
-      color: #2e7d32;
+      font-size: 22px;
+      color: #00ff41;
+      margin-bottom: 10px;
+      text-shadow: 0 0 6px #00ff41;
     }
     .btn {
-      padding: 10px 20px;
-      font-size: 16px;
+      padding: 12px 28px;
+      font-size: 18px;
       border: none;
-      margin-top: 20px;
+      margin-top: 24px;
       border-radius: 8px;
-      background: #00c853;
-      color: white;
+      background: linear-gradient(90deg, #00ff41 0%, #009688 100%);
+      color: #111;
       cursor: pointer;
+      font-family: 'Fira Mono', monospace;
+      font-weight: bold;
+      box-shadow: 0 0 10px #00ff41;
+      transition: background 0.2s, color 0.2s;
     }
     .btn:hover {
-      background: #00b34d;
+      background: linear-gradient(90deg, #009688 0%, #00ff41 100%);
+      color: #fff;
     }
     .delete {
-      background: #d32f2f;
-      margin-top: 10px;
+      background: linear-gradient(90deg, #d32f2f 0%, #ff1744 100%);
+      color: #fff;
+      margin-top: 16px;
+      box-shadow: 0 0 10px #ff1744;
+    }
+    .delete:hover {
+      background: linear-gradient(90deg, #ff1744 0%, #d32f2f 100%);
     }
     #leaderboard {
-      margin-top: 40px;
+      margin-top: 48px;
+      background: rgba(0,0,0,0.6);
+      border-radius: 12px;
+      padding: 20px 0 10px 0;
+      box-shadow: 0 0 16px #00ff41;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #leaderboard h3 {
+      color: #ffea00;
+      text-shadow: 0 0 8px #ffea00;
+      margin-bottom: 12px;
+      font-family: 'Fira Mono', monospace;
     }
     #leaderboard div {
-      border-bottom: 1px solid #ccc;
-      padding: 5px;
+      border-bottom: 1px solid #222;
+      padding: 7px 0;
+      color: #e0e0e0;
+      font-family: 'Fira Mono', monospace;
+      font-size: 1.08em;
+    }
+    #leaderboard div strong {
+      color: #00ff41;
+    }
+    ::-webkit-scrollbar {
+      width: 8px;
+      background: #222;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #00ff41;
+      border-radius: 4px;
     }
   </style>
 </head>
@@ -160,7 +224,7 @@
       }, { onlyOnce: true });
 
       setTimeout(() => {
-        window.location.href = "index.tml";
+        window.location.href = "index.html";
       }, 3000); // 3 soniyadan keyin bosh sahifaga qaytadi
     }
 
