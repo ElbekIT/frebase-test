@@ -161,46 +161,61 @@
     }
 
     /* like */
-
-      .like-container {
+ .like-container {
     margin-top: 40px;
     text-align: center;
+    font-family: 'Montserrat', sans-serif;
   }
-  .like-btn {
+  .vote-buttons {
+    margin-bottom: 18px;
+  }
+  .like-btn, .dislike-btn {
     font-size: 48px;
     background: none;
     border: none;
     cursor: pointer;
+    margin: 0 12px;
     transition: transform 0.2s;
   }
-  .like-btn:hover {
-    transform: scale(1.1);
+  .like-btn:hover, .dislike-btn:hover {
+    transform: scale(1.15);
   }
-  .like-count {
-    font-size: 20px;
-    color: #2e7d32;
-    margin-top: 8px;
-    font-weight: bold;
+  .vote-stats {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
   }
-  .like-bar {
-    width: 200px;
+  .stat {
+    width: 120px;
+  }
+  .bar {
     height: 14px;
-    background: #ddd;
+    background: #eee;
     border-radius: 7px;
+    margin: 8px 0;
     overflow: hidden;
-    margin: 10px auto;
   }
-  .like-fill {
+  .fill {
     height: 100%;
-    background: #4caf50;
     width: 0%;
     transition: width 0.3s;
   }
-  #likePercent {
-    font-size: 16px;
-    color: #555;
+  .fill.like {
+    background: #4caf50;
+  }
+  .fill.dislike {
+    background: #f44336;
+  }
+  #likeCount, #dislikeCount {
+    font-weight: bold;
+    color: #333;
     margin-top: 4px;
   }
+  #likePercent, #dislikePercent {
+    font-size: 14px;
+    color: #555;
+  }
+    
   </style>
 </head>
 <body>
@@ -208,7 +223,7 @@
   <div class="topbar" id="usernameBox">👤 Foydalanuvchi</div>
 
   <h1>👋 Assalomu alaykum!</h1>
-  <p>Bu sayt orqali siz tanlagan vaqt ichida qancha o‘zbekcha so‘z topa olishingizni sinab ko‘rishingiz mumkin!</p>
+  <p>Bu sayt o</div>rqali siz tanlagan vaqt ichida qancha o‘zbekcha so‘z topa olishingizni sinab ko‘rishingiz mumkin!</p>
 
   <label for="duration">⏱ O‘yin davomiyligini tanlang (soniya):</label><br>
   <select id="duration">
@@ -217,19 +232,32 @@
     <option value="30">30 soniya</option>
     <option value="60">60 soniya</option>
   </select>
-  <div class="like-container"></div>
-    <button class="like-btn" onclick="handleLike()">👍</button>
-    <div class="like-count" id="likeCount">Yuklanmoqda...</div>
-    <div class="like-bar">
-      <div class="like-fill" id="likeFill"></div>
-    </div>
-    <div id="likePercent"></div>
+<div class="like-container">
+  <div class="vote-buttons">
+    <button class="like-btn" onclick="handleVote('like')">👍</button>
+    <button class="dislike-btn" onclick="handleVote('dislike')">👎</button>
   </div>
+
+  <div class="vote-stats">
+    <div class="stat">
+      <div id="likeCount">👍 0</div>
+      <div class="bar"><div id="likeFill" class="fill like"></div></div>
+      <div id="likePercent">0%</div>
+    </div>
+
+    <div class="stat">
+      <div id="dislikeCount">👎 0</div>
+      <div class="bar"><div id="dislikeFill" class="fill dislike"></div></div>
+      <div id="dislikePercent">0%</div>
+    </div>
+  </div>
+</div>
   <br><br>
   <button class="btn start" onclick="startGame()">🚀 Boshlash</button>
   <button class="btn reyting" onclick="location.href='reyting.html'">🏆 Reyting</button>
   <div style="position: fixed; bottom: 18px; left: 18px;">
     <button onclick="deleteAccount()" style="display: flex; align-items: center; gap: 6px; background: #ff5f6d; color: #fff; border: none; border-radius: 6px; padding: 8px 14px; font-size: 1rem; cursor: pointer;">
+      <!-- Savatcha (delete/trash) ikonkasi -->
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#fff" viewBox="0 0 24 24">
         <path d="M3 6h18v2H3V6zm2 3h14l-1.5 12.5c-.1.8-.8 1.5-1.6 1.5H8.1c-.8 0-1.5-.7-1.6-1.5L5 9zm5 2v7h2v-7h-2zm4 0v7h2v-7h-2zm-8 0v7h2v-7H7z"/>
       </svg>
@@ -237,70 +265,96 @@
     </button>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, get, set, runTransaction, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyB1KIzGCvifH-lzNzOtY0F__AL6PU7_B_Y",
-      authDomain: "elbekproductions.firebaseapp.com",
-      databaseURL: "https://elbekproductions-default-rtdb.firebaseio.com",
-      projectId: "elbekproductions",
-      storageBucket: "elbekproductions.appspot.com",
-      messagingSenderId: "467619718063",
-      appId: "1:467619718063:web:f370881cffbb396899c55a"
-    };
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, runTransaction, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const likesRef = ref(db, "globalLikes/count");
-    const maxLikes = 100;
+  // Firebase konfiguratsiyasi
+  const firebaseConfig = {
+    apiKey: "AIzaSyB1KIzGCvifH-lzNzOtY0F__AL6PU7_B_Y",
+    authDomain: "elbekproductions.firebaseapp.com",
+    databaseURL: "https://elbekproductions-default-rtdb.firebaseio.com",
+    projectId: "elbekproductions",
+    storageBucket: "elbekproductions.appspot.com",
+    messagingSenderId: "467619718063",
+    appId: "1:467619718063:web:f370881cffbb396899c55a"
+  };
 
-    function updateUI(likes) {
-      document.getElementById("likeCount").textContent = `${likes} ta yoqdi`;
-      const percent = Math.min((likes / maxLikes) * 100, 100).toFixed(1);
-      document.getElementById("likeFill").style.width = percent + "%";
-      document.getElementById("likePercent").textContent = percent + "%";
+  // Firebase ilovasini ishga tushirish
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  // Global ovozlar uchun referenslar
+  const likeRef = ref(db, "globalVotes/like");
+  const dislikeRef = ref(db, "globalVotes/dislike");
+
+  // Ovoz berish funksiyasi
+  window.handleVote = function(type) {
+    const refToUpdate = type === 'like' ? likeRef : dislikeRef;
+    runTransaction(refToUpdate, (current) => (current || 0) + 1);
+  }
+
+  // UI yangilash funksiyasi
+  function updateUI(likes, dislikes) {
+    const total = likes + dislikes || 1;
+    const likePercent = ((likes / total) * 100).toFixed(1);
+    const dislikePercent = ((dislikes / total) * 100).toFixed(1);
+
+    document.getElementById("likeCount").textContent = `👍 ${likes}`;
+    document.getElementById("dislikeCount").textContent = `👎 ${dislikes}`;
+    document.getElementById("likeFill").style.width = likePercent + "%";
+    document.getElementById("dislikeFill").style.width = dislikePercent + "%";
+    document.getElementById("likePercent").textContent = likePercent + "%";
+    document.getElementById("dislikePercent").textContent = dislikePercent + "%";
+  }
+
+  // Real-time listenerlar
+  let likeCount = 0;
+  let dislikeCount = 0;
+
+  onValue(likeRef, (snap) => {
+    likeCount = snap.val() || 0;
+    updateUI(likeCount, dislikeCount);
+  });
+  onValue(dislikeRef, (snap) => {
+    dislikeCount = snap.val() || 0;
+    updateUI(likeCount, dislikeCount);
+  });
+</script>
+
+<script>
+  // Foydalanuvchi ma'lumotini olish va tekshirish
+  const user = JSON.parse(localStorage.getItem("sozUser"));
+  if (!user) window.location.href = "register.html";
+
+  // Foydalanuvchi ismini chiqarish
+  document.getElementById("usernameBox").textContent = `👤 ${user.name}`;
+
+  // O'yinni boshlash funksiyasi
+  function startGame() {
+    const selectedTime = document.getElementById("duration").value;
+    localStorage.setItem("sozTime", selectedTime);
+    window.location.href = "oyin.html";
+  }
+
+  // Akkauntni o'chirish funksiyasi
+  function deleteAccount() {
+    if (confirm("Akkauntingizni o‘chirmoqchimisiz?")) {
+      localStorage.removeItem("sozUser");
+      alert("Akkaunt o‘chirildi.");
+      window.location.href = "register.html";
     }
+  }
+</script>
 
-    window.handleLike = function() {
-      runTransaction(likesRef, current => (current || 0) + 1);
-    }
-
-    // Real-time update
-    onValue(likesRef, (snapshot) => {
-      const count = snapshot.val() || 0;
-      updateUI(count);
-    });
-  </script>
-
-  <script>
-    const user = JSON.parse(localStorage.getItem("sozUser"));
-    if (!user) window.location.href = "register.html";
-
-    // Foydalanuvchi ismini chiqarish
-    document.getElementById("usernameBox").textContent = `👤 ${user.name}`;
-
-    window.startGame = function() {
-      const selectedTime = document.getElementById("duration").value;
-      localStorage.setItem("sozTime", selectedTime);
-      window.location.href = "oyin.html";
-    }
-
-    window.deleteAccount = function() {
-      if (confirm("Akkauntingizni o‘chirmoqchimisiz?")) {
-        localStorage.removeItem("sozUser");
-        alert("Akkaunt o‘chirildi.");
-        window.location.href = "register.html";
-      }
-    }
-  </script>
-  <style>
-    html, body {
-      scrollbar-width: none !important;
-    }
-    html::-webkit-scrollbar, body::-webkit-scrollbar {
-      display: none !important;
-    }
-  </style>
+<style>
+  html, body {
+    scrollbar-width: none !important;
+  }
+  html::-webkit-scrollbar, body::-webkit-scrollbar {
+    display: none !important;
+  }
+</style>
+</body>
 </html>
