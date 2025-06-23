@@ -44,6 +44,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      z-index: 10;
     }
     h1 {
       color: #2e3a59;
@@ -52,6 +53,7 @@
       font-weight: 800;
       letter-spacing: 1.5px;
       text-shadow: 0 2px 12px #e0e7ef;
+      text-align: center;
     }
     p {
       font-size: 1.15rem;
@@ -64,6 +66,7 @@
       padding: 18px 22px;
       box-shadow: 0 2px 18px #b6c6e022;
       font-family: 'Inter', Arial, sans-serif;
+      text-align: center;
     }
     label {
       font-size: 1.07rem;
@@ -160,32 +163,6 @@
       background: #5b9df9;
       border-radius: 8px;
     }
-    @media (max-width: 600px) {
-      .topbar {
-      right: 8px;
-      top: 8px;
-      padding: 8px 12px;
-      font-size: 0.93rem;
-      }
-      h1 {
-      font-size: 1.4rem;
-      }
-      p {
-      font-size: 0.98rem;
-      padding: 10px 4px;
-      }
-      .btn {
-      padding: 11px 16px;
-      font-size: 0.97rem;
-      }
-      .vote-stats {
-      flex-direction: column;
-      gap: 18px;
-      }
-      .stat {
-      width: 100%;
-      }
-    }
 
     /* like */
     .like-container {
@@ -276,6 +253,77 @@
       font-size: 14px;
       color: #555;
       margin-top: 2px;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 900px) {
+      .topbar {
+      right: 16px;
+      top: 16px;
+      padding: 10px 18px;
+      font-size: 1rem;
+      }
+      .like-container {
+      max-width: 95vw;
+      padding: 18px 4vw 14px 4vw;
+      }
+      .stat {
+      width: 100px;
+      padding: 10px 4px 8px 4px;
+      }
+      .btn {
+      padding: 12px 20px;
+      font-size: 1rem;
+      }
+    }
+    @media (max-width: 600px) {
+      body {
+      padding: 8vw 2vw 10vw 2vw;
+      min-height: 100vh;
+      }
+      .topbar {
+      right: 8px;
+      top: 8px;
+      padding: 8px 12px;
+      font-size: 0.93rem;
+      }
+      h1 {
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+      }
+      p {
+      font-size: 0.98rem;
+      padding: 10px 4px;
+      margin-bottom: 18px;
+      }
+      .btn {
+      padding: 11px 16px;
+      font-size: 0.97rem;
+      margin: 6px;
+      }
+      .like-container {
+      margin-top: 24px;
+      padding: 12px 2vw 10px 2vw;
+      max-width: 99vw;
+      }
+      .vote-stats {
+      flex-direction: column;
+      gap: 18px;
+      }
+      .stat {
+      width: 100%;
+      margin: 0 0 8px 0;
+      padding: 8px 2px 6px 2px;
+      }
+      .vote-buttons {
+      gap: 12px;
+      }
+      .like-btn, .dislike-btn {
+      font-size: 32px;
+      width: 48px;
+      height: 48px;
+      margin: 0 4px;
+      }
     }
     
   </style>
